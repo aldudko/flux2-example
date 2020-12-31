@@ -1,0 +1,28 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: flux2-example
+  namespace: flux-system
+spec:
+  gitImplementation: go-git
+  interval: 1m0s
+  ref:
+    branch: master
+  secretRef:
+    name: flux2-example
+  timeout: 20s
+  url: ssh://git@github.com/aldudko/flux2-example.git
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: flux-system
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./clusters/staging/flux-system
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux2-example
